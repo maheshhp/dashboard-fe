@@ -21,7 +21,7 @@ function App() {
             authToken={authToken}
           />
           <Route exact path="/login">
-            <Login storeAuthToken={storeAuthToken} />
+            <Login authToken={authToken} storeAuthToken={storeAuthToken} />
           </Route>
         </Switch>
       </BrowserRouter>

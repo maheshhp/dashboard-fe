@@ -15,7 +15,7 @@ const useAuthToken = () => {
     return null;
   };
 
-  const storeAuthToken = ({ accessToken }: Record<string, string>): void => {
+  const storeAuthToken = (accessToken: string): void => {
     sessionStorage.setItem(
       AUTH_TOKEN_SESSION_STORAGE_KEY,
       JSON.stringify({ accessToken })
