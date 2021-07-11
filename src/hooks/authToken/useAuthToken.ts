@@ -1,29 +1,16 @@
 import { useState } from "react";
-
-const AUTH_TOKEN_SESSION_STORAGE_KEY = "dashboardAuthToken";
+import {
+  setAuthTokenInSessionStorage,
+  getAuthTokenFromSessionStorage,
+} from "../../utils/sessionStorage";
 
 const useAuthToken = () => {
-  const getAuthToken = (): string | null => {
-    const authTokenString = sessionStorage.getItem(
-      AUTH_TOKEN_SESSION_STORAGE_KEY
-    );
-    if (authTokenString) {
-      const authToken = JSON.parse(authTokenString);
-      return authToken.accessToken;
-    }
-
-    return null;
-  };
-
   const storeAuthToken = (accessToken: string): void => {
-    sessionStorage.setItem(
-      AUTH_TOKEN_SESSION_STORAGE_KEY,
-      JSON.stringify({ accessToken })
-    );
+    setAuthTokenInSessionStorage(accessToken);
     setAuthToken(accessToken);
   };
 
-  const [authToken, setAuthToken] = useState(getAuthToken());
+  const [authToken, setAuthToken] = useState(getAuthTokenFromSessionStorage());
 
   return {
     authToken,

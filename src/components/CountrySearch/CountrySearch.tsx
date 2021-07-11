@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React from "react";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -7,45 +7,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import { makeStyles } from "@material-ui/core/styles";
-
-const mockCountrySearchData = [
-  {
-    name: "British Indian Ocean Territory",
-    alpha3Code: "IOT",
-    population: 3000,
-    currencies: [
-      {
-        name: "United States dollar",
-        symbol: "$",
-        code: "USD",
-      },
-    ],
-  },
-  {
-    name: "India",
-    alpha3Code: "IND",
-    population: 1295210000,
-    currencies: [
-      {
-        name: "Indian rupee",
-        symbol: "₹",
-        code: "INR",
-      },
-    ],
-  },
-  {
-    name: "Indonesia",
-    alpha3Code: "IDN",
-    population: 258705000,
-    currencies: [
-      {
-        name: "Indonesian rupiah",
-        symbol: "Rp",
-        code: "IDR",
-      },
-    ],
-  },
-];
+import { CountrySearchResult } from "../../pages/Dashboard/dashboard.types";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -77,24 +39,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const onCountrySearchChange = (
-  event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  setSearchString: Function,
-  setSearchEnable: Function
-): void => {
-  const searchString = event.target.value;
-  setSearchString(searchString);
-  if (searchString && searchString !== "") {
-    setSearchEnable(true);
-  } else {
-    setSearchEnable(false);
-  }
-};
-
-const CountrySearch = () => {
+const CountrySearch = ({
+  searchString,
+  setSearchString,
+  onSearch,
+  searchLoading,
+  addToListLoading,
+  countriesSearchData,
+}: {
+  searchString: string;
+  onSearch: Function;
+  setSearchString: Function;
+  searchLoading: boolean;
+  addToListLoading: boolean;
+  countriesSearchData: Array<CountrySearchResult>;
+}) => {
   const classes = useStyles();
-  const [searchString, setSearchString] = useState(undefined);
-  const [searchEnabled, setSearchEnabled] = useState(false);
+
+  if (searchLoading || addToListLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container component="main">
@@ -103,7 +67,13 @@ const CountrySearch = () => {
         <Typography component="h1" variant="h6">
           Search & Add Countries
         </Typography>
-        <form className={classes.form} noValidate onSubmit={(event) => {}}>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={(event) => {
+            onSearch(event);
+          }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12} md={8} lg={8}>
               <TextField
@@ -114,13 +84,7 @@ const CountrySearch = () => {
                 id="countrySearch"
                 label="Country name"
                 name="countrySearch"
-                onChange={(event) =>
-                  onCountrySearchChange(
-                    event,
-                    setSearchString,
-                    setSearchEnabled
-                  )
-                }
+                onChange={(event) => setSearchString(event.target.value)}
                 value={searchString}
               />
             </Grid>
@@ -137,7 +101,7 @@ const CountrySearch = () => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                disabled={!searchEnabled}
+                disabled={!(searchString && searchString !== "")}
               >
                 Search
               </Button>
@@ -145,7 +109,7 @@ const CountrySearch = () => {
           </Grid>
         </form>
         <div className={classes.countryCardsContainer}>
-          {mockCountrySearchData.map((country) => (
+          {countriesSearchData.map((country) => (
             <Card key={country.alpha3Code} className={classes.countryCard}>
               <div className={classes.countryCardContent}>
                 <Typography component="span">{country.name}</Typography>
