@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import { CountrySearchResult } from "../../pages/Dashboard/dashboard.types";
 
@@ -37,27 +38,38 @@ const useStyles = makeStyles((theme) => ({
     overflow: "scroll",
     maxHeight: "100px",
   },
+  loaderContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
 }));
 
 const CountrySearch = ({
   searchString,
   setSearchString,
   onSearch,
-  searchLoading,
-  addToListLoading,
+  loading,
   countriesSearchData,
+  onAddCountryToList,
 }: {
   searchString: string;
   onSearch: Function;
   setSearchString: Function;
-  searchLoading: boolean;
-  addToListLoading: boolean;
+  onAddCountryToList: Function;
+  loading: boolean;
   countriesSearchData: Array<CountrySearchResult>;
 }) => {
   const classes = useStyles();
 
-  if (searchLoading || addToListLoading) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className={classes.loaderContainer}>
+        <CircularProgress color="primary" />
+      </div>
+    );
   }
 
   return (
@@ -113,7 +125,11 @@ const CountrySearch = ({
             <Card key={country.alpha3Code} className={classes.countryCard}>
               <div className={classes.countryCardContent}>
                 <Typography component="span">{country.name}</Typography>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => onAddCountryToList(country)}
+                >
                   Add to list
                 </Button>
               </div>

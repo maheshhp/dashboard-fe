@@ -5,24 +5,14 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
-
-const mockdata = [
-  {
-    countryCode: "IND",
-    name: "India",
-    population: 1234567,
-    currencies: [
-      {
-        name: "Indian Rupee",
-        code: "INR",
-        symbol: "₹",
-      },
-    ],
-  },
-];
+import { CountrySearchResult } from "../../pages/Dashboard/dashboard.types";
 
 const mockConvertedValuesData: Record<string, number> = {
   INR: 12243.76,
+};
+
+const getLocalCurrencyValue = (value: string | number): string => {
+  return value ? Number(value).toLocaleString() : "-";
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CountryTable = (): JSX.Element => {
+const CountryTable = ({
+  countriesInList,
+}: {
+  countriesInList: Array<CountrySearchResult>;
+}): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -47,23 +41,21 @@ const CountryTable = (): JSX.Element => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {mockdata.map((country) => (
-            <TableRow key={country.countryCode}>
+          {countriesInList.map((country) => (
+            <TableRow key={country.alpha3Code}>
               <TableCell>{country.name}</TableCell>
-              <TableCell>
-                {Number(country.population).toLocaleString()}
-              </TableCell>
+              <TableCell>{getLocalCurrencyValue(country.population)}</TableCell>
               <TableCell>
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell className={classes.tableHeading}>
+                      <TableCell width="50%" className={classes.tableHeading}>
                         Name
                       </TableCell>
-                      <TableCell className={classes.tableHeading}>
+                      <TableCell width="10%" className={classes.tableHeading}>
                         Code
                       </TableCell>
-                      <TableCell className={classes.tableHeading}>
+                      <TableCell width="40%" className={classes.tableHeading}>
                         SEK Conversion
                       </TableCell>
                     </TableRow>
@@ -71,13 +63,13 @@ const CountryTable = (): JSX.Element => {
                   <TableBody>
                     {country.currencies.map((currency) => (
                       <TableRow key={currency.code}>
-                        <TableCell>{currency.name}</TableCell>
-                        <TableCell>{currency.code}</TableCell>
-                        <TableCell>
+                        <TableCell width="50%">{currency.name}</TableCell>
+                        <TableCell width="10%">{currency.code}</TableCell>
+                        <TableCell width="40%">
                           <span>{currency.symbol}</span>
-                          {Number(
+                          {getLocalCurrencyValue(
                             mockConvertedValuesData[currency.code]
-                          ).toLocaleString()}
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

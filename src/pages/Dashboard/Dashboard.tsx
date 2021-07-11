@@ -6,10 +6,15 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import Snackbar from "@material-ui/core/Snackbar";
 import CountryTable from "../../components/CountryTable/CountryTable";
 import CountrySearch from "../../components/CountrySearch/CountrySearch";
 import CurrencyConvert from "../../components/CurrencyConvert/CurrencyConvert";
-import { CountrySearchReqVars, CountrySearchGqlRes } from "./dashboard.types";
+import {
+  CountrySearchReqVars,
+  CountrySearchGqlRes,
+  CountrySearchResult,
+} from "./dashboard.types";
 import { SEARCH_COUNTRIES_QUERY } from "./constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,10 +42,13 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
   const [searchString, setSearchString] = useState("");
+  const [countriesInList, setCountriesInList] = useState<
+    Array<CountrySearchResult>
+  >([]);
 
   const [
     searchCountries,
-    { called, loading, data: searchCountriesData, error },
+    { loading: searchLoading, data: searchCountriesData, error },
   ] = useLazyQuery<CountrySearchGqlRes, CountrySearchReqVars>(
     SEARCH_COUNTRIES_QUERY
   );
@@ -48,6 +56,15 @@ const Dashboard = (): JSX.Element => {
   const onSearch = (event: FormEvent): void => {
     event.preventDefault();
     searchCountries({ variables: { countryName: String(searchString) } });
+  };
+
+  const onAddCountryToList = (countryData: CountrySearchResult): void => {
+    const countryInList = countriesInList.find(
+      (country) => country.alpha3Code === countryData.alpha3Code
+    );
+    if (!countryInList) {
+      setCountriesInList([...countriesInList, countryData]);
+    }
   };
 
   return (
@@ -65,11 +82,11 @@ const Dashboard = (): JSX.Element => {
                   searchString={searchString}
                   setSearchString={setSearchString}
                   onSearch={onSearch}
-                  searchLoading={called && loading}
-                  addToListLoading={false}
+                  loading={searchLoading}
                   countriesSearchData={
                     searchCountriesData?.searchCountries || []
                   }
+                  onAddCountryToList={onAddCountryToList}
                 />
               </Paper>
             </Grid>
@@ -80,12 +97,22 @@ const Dashboard = (): JSX.Element => {
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <CountryTable />
+                <CountryTable countriesInList={countriesInList} />
               </Paper>
             </Grid>
           </Grid>
         </Container>
       </main>
+      <Snackbar
+        open={
+          error && (!!error?.networkError || error.graphQLErrors?.length > 0)
+        }
+      >
+        <div>
+          Oops! An error has occurred. Please try again. If error persists, try
+          logging in again.
+        </div>
+      </Snackbar>
     </div>
   );
 };
