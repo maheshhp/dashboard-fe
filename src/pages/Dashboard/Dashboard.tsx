@@ -1,27 +1,33 @@
 import React, { FormEvent, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLazyQuery } from "@apollo/client";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import CountryTable from "../../components/CountryTable/CountryTable";
-import CountrySearch from "../../components/CountrySearch/CountrySearch";
-import CurrencyConvert from "../../components/CurrencyConvert/CurrencyConvert";
+import {
+  CssBaseline,
+  Container,
+  Typography,
+  Grid,
+  Paper,
+} from "@material-ui/core";
+import {
+  CountryTable,
+  CountrySearch,
+  CurrencyConvert,
+  ErrorBanner,
+} from "../../components";
+import {
+  CurrencyRatesGqlRes,
+  CurrencyRatesReqVars,
+} from "../../types/currency";
 import {
   CountrySearchReqVars,
   CountrySearchGqlRes,
   CountrySearchResult,
-  CurrencyRatesGqlRes,
-  CurrencyRatesReqVars,
-} from "./dashboard.types";
+} from "../../types/country";
 import { SEARCH_COUNTRIES_QUERY, CURRENCY_RATES_QUERY } from "./constants";
 import {
   convertSekToCurrenciesInList,
   getAllCurrenciesAndCountries,
-} from "../../utils/currencyConversion";
-import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
+} from "./dashboard.utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {

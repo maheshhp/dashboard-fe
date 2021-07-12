@@ -1,13 +1,15 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import {
+  Button,
+  CssBaseline,
+  TextField,
+  Typography,
+  Container,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
 import { LOGIN_URL, SIMPLE_EMAIL_REGEX } from "./constants";
-import { StoreAuthTokenFunction } from "./login.types";
+import { StoreAuthTokenFunction } from "../../types/auth";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

@@ -21,7 +21,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ networkError }) => {
   // Custom error message to show user friendly errors
   if (networkError) {
     const { statusCode } = networkError as ServerError;

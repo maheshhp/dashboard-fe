@@ -1,4 +1,14 @@
-// Country search types
+import { FormEvent } from "react";
+
+export type CountrySearchFunction = (
+  event: FormEvent,
+  searchString: string
+) => void;
+
+export type AddCountryToListFunction = (
+  countryData: CountrySearchResult
+) => void;
+
 interface SearchCurrency {
   code: string;
   name: string;
@@ -18,22 +28,4 @@ export interface CountrySearchGqlRes {
 
 export interface CountrySearchReqVars {
   countryName: string;
-}
-
-// Currency rates types
-interface Rate {
-  code: string;
-  rate: number;
-}
-export interface CurrencyRates {
-  base: string;
-  rates: Array<Rate>;
-}
-
-export interface CurrencyRatesGqlRes {
-  currencyRates: CurrencyRates;
-}
-
-export interface CurrencyRatesReqVars {
-  currencySymbols: Array<string>;
 }

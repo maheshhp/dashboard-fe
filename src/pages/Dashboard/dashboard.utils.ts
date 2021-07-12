@@ -1,7 +1,5 @@
-import {
-  CountrySearchResult,
-  CurrencyRates,
-} from "../pages/Dashboard/dashboard.types";
+import { CountrySearchResult } from "../../types/country";
+import { CurrencyRates } from "../../types/currency";
 
 export const convertSekToCurrenciesInList = (
   currencyResponse: CurrencyRates | undefined,

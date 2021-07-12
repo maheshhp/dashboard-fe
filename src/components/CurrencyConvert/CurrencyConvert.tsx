@@ -1,11 +1,13 @@
 import React, { useState, ChangeEvent } from "react";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import {
+  Container,
+  CssBaseline,
+  TextField,
+  Typography,
+  Button,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { OnCurrencyConvertFunction } from "./currencyConvert.types";
+import { OnCurrencyConvertFunction } from "../../types/currency";
 
 const useStyles = makeStyles(() => ({
   paper: {
