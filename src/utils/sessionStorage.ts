@@ -1,4 +1,4 @@
-const AUTH_TOKEN_SESSION_STORAGE_KEY = "dashboardAuthToken";
+import { AUTH_TOKEN_SESSION_STORAGE_KEY } from "./constants";
 
 export const getAuthTokenFromSessionStorage = (): string | null => {
   const authTokenString = sessionStorage.getItem(
@@ -16,4 +16,8 @@ export const setAuthTokenInSessionStorage = (accessToken: string): void => {
     AUTH_TOKEN_SESSION_STORAGE_KEY,
     JSON.stringify({ accessToken })
   );
+};
+
+export const removeAuthTokenFromSessionStorage = (): void => {
+  sessionStorage.removeItem(AUTH_TOKEN_SESSION_STORAGE_KEY);
 };

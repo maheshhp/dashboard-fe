@@ -21,6 +21,7 @@ import {
   convertSekToCurrenciesInList,
   getAllCurrenciesAndCountries,
 } from "../../utils/currencyConversion";
+import ErrorBanner from "../../components/ErrorBanner/ErrorBanner";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,15 +56,15 @@ const Dashboard = (): JSX.Element => {
 
   const [
     searchCountries,
-    { loading: searchLoading, data: searchCountriesData },
+    { loading: searchLoading, data: searchCountriesData, error: searchError },
   ] = useLazyQuery<CountrySearchGqlRes, CountrySearchReqVars>(
     SEARCH_COUNTRIES_QUERY
   );
 
-  const [getCurrencyRates, { data: currencyData }] = useLazyQuery<
-    CurrencyRatesGqlRes,
-    CurrencyRatesReqVars
-  >(CURRENCY_RATES_QUERY);
+  const [getCurrencyRates, { data: currencyData, error: currencyError }] =
+    useLazyQuery<CurrencyRatesGqlRes, CurrencyRatesReqVars>(
+      CURRENCY_RATES_QUERY
+    );
 
   const onSearch = (event: FormEvent, searchString: string): void => {
     event.preventDefault();
@@ -105,6 +106,12 @@ const Dashboard = (): JSX.Element => {
             Dashboard
           </Typography>
           <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={12}>
+              <ErrorBanner
+                searchError={searchError}
+                currencyError={currencyError}
+              />
+            </Grid>
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={classes.paper}>
                 <CountrySearch
