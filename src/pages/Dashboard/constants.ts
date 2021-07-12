@@ -14,3 +14,15 @@ export const SEARCH_COUNTRIES_QUERY = gql`
     }
   }
 `;
+
+export const CURRENCY_RATES_QUERY = gql`
+  query CurrencyRates($currencySymbols: [String!]) {
+    currencyRates(currencySymbols: $currencySymbols) {
+      base
+      rates {
+        code
+        rate
+      }
+    }
+  }
+`;

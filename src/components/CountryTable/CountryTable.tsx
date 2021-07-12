@@ -7,10 +7,6 @@ import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
 import { CountrySearchResult } from "../../pages/Dashboard/dashboard.types";
 
-const mockConvertedValuesData: Record<string, number> = {
-  INR: 12243.76,
-};
-
 const getLocalCurrencyValue = (value: string | number): string => {
   return value ? Number(value).toLocaleString() : "-";
 };
@@ -23,8 +19,10 @@ const useStyles = makeStyles((theme) => ({
 
 const CountryTable = ({
   countriesInList,
+  currencyConvValues,
 }: {
   countriesInList: Array<CountrySearchResult>;
+  currencyConvValues: Record<string, Record<string, number>>;
 }): JSX.Element => {
   const classes = useStyles();
 
@@ -68,7 +66,9 @@ const CountryTable = ({
                         <TableCell width="40%">
                           <span>{currency.symbol}</span>
                           {getLocalCurrencyValue(
-                            mockConvertedValuesData[currency.code]
+                            currencyConvValues[country.alpha3Code]?.[
+                              currency.code
+                            ]
                           )}
                         </TableCell>
                       </TableRow>

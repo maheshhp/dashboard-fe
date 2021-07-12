@@ -30,7 +30,11 @@ const onCurrencyValueChange = (
   }
 };
 
-const CurrencyConvert = () => {
+const CurrencyConvert = ({
+  onConvertCurrency,
+}: {
+  onConvertCurrency: Function;
+}) => {
   const classes = useStyles();
   const [currencyValue, setCurrencyValue] = useState(0);
   const [convertEnabled, setConvertEnabled] = useState(false);
@@ -42,7 +46,13 @@ const CurrencyConvert = () => {
         <Typography component="h1" variant="h6">
           Enter Value in SEK to convert
         </Typography>
-        <form className={classes.form} noValidate onSubmit={(event) => {}}>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={(event) => {
+            onConvertCurrency(event, Number(currencyValue));
+          }}
+        >
           <TextField
             variant="outlined"
             margin="normal"

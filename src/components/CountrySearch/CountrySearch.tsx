@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -48,21 +48,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CountrySearch = ({
-  searchString,
-  setSearchString,
   onSearch,
   loading,
   countriesSearchData,
   onAddCountryToList,
 }: {
-  searchString: string;
   onSearch: Function;
-  setSearchString: Function;
   onAddCountryToList: Function;
   loading: boolean;
   countriesSearchData: Array<CountrySearchResult>;
 }) => {
   const classes = useStyles();
+  const [searchString, setSearchString] = useState("");
 
   if (loading) {
     return (
@@ -83,7 +80,7 @@ const CountrySearch = ({
           className={classes.form}
           noValidate
           onSubmit={(event) => {
-            onSearch(event);
+            onSearch(event, searchString);
           }}
         >
           <Grid container spacing={3}>
@@ -96,7 +93,9 @@ const CountrySearch = ({
                 id="countrySearch"
                 label="Country name"
                 name="countrySearch"
-                onChange={(event) => setSearchString(event.target.value)}
+                onChange={(event) =>
+                  setSearchString(String(event.target.value))
+                }
                 value={searchString}
               />
             </Grid>

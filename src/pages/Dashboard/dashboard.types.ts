@@ -22,10 +22,18 @@ export interface CountrySearchReqVars {
 
 // Currency rates types
 interface Rate {
-  country: string;
+  code: string;
   rate: number;
 }
-export interface CurrencyRatesRes {
+export interface CurrencyRates {
   base: string;
   rates: Array<Rate>;
+}
+
+export interface CurrencyRatesGqlRes {
+  currencyRates: CurrencyRates;
+}
+
+export interface CurrencyRatesReqVars {
+  currencySymbols: Array<string>;
 }

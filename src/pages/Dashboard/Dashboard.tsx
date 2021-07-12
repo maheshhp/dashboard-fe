@@ -6,7 +6,6 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import CountryTable from "../../components/CountryTable/CountryTable";
 import CountrySearch from "../../components/CountrySearch/CountrySearch";
 import CurrencyConvert from "../../components/CurrencyConvert/CurrencyConvert";
@@ -14,8 +13,14 @@ import {
   CountrySearchReqVars,
   CountrySearchGqlRes,
   CountrySearchResult,
+  CurrencyRatesGqlRes,
+  CurrencyRatesReqVars,
 } from "./dashboard.types";
-import { SEARCH_COUNTRIES_QUERY } from "./constants";
+import { SEARCH_COUNTRIES_QUERY, CURRENCY_RATES_QUERY } from "./constants";
+import {
+  convertSekToCurrenciesInList,
+  getAllCurrenciesAndCountries,
+} from "../../utils/currencyConversion";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,30 +46,54 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
-  const [searchString, setSearchString] = useState("");
+  const [currencyConvValues, setCurrencyConvValues] = useState<
+    Record<string, Record<string, number>>
+  >({});
   const [countriesInList, setCountriesInList] = useState<
     Array<CountrySearchResult>
   >([]);
 
   const [
     searchCountries,
-    { loading: searchLoading, data: searchCountriesData, error },
+    { loading: searchLoading, data: searchCountriesData },
   ] = useLazyQuery<CountrySearchGqlRes, CountrySearchReqVars>(
     SEARCH_COUNTRIES_QUERY
   );
 
-  const onSearch = (event: FormEvent): void => {
+  const [getCurrencyRates, { data: currencyData }] = useLazyQuery<
+    CurrencyRatesGqlRes,
+    CurrencyRatesReqVars
+  >(CURRENCY_RATES_QUERY);
+
+  const onSearch = (event: FormEvent, searchString: string): void => {
     event.preventDefault();
-    searchCountries({ variables: { countryName: String(searchString) } });
+    searchCountries({ variables: { countryName: searchString } });
   };
 
   const onAddCountryToList = (countryData: CountrySearchResult): void => {
-    const countryInList = countriesInList.find(
-      (country) => country.alpha3Code === countryData.alpha3Code
+    const { countries, currencies } = getAllCurrenciesAndCountries(
+      countriesInList,
+      countryData
     );
-    if (!countryInList) {
+    // Add country to list and get currency rates if its not already there
+    if (!countries.includes(countryData.alpha3Code)) {
+      getCurrencyRates({
+        variables: {
+          currencySymbols: Array.from(currencies),
+        },
+      });
       setCountriesInList([...countriesInList, countryData]);
     }
+  };
+
+  const onConvertCurrency = (event: FormEvent, currencyValue: number): void => {
+    event.preventDefault();
+    const convertedValues = convertSekToCurrenciesInList(
+      currencyData?.currencyRates,
+      currencyValue,
+      countriesInList
+    );
+    setCurrencyConvValues(convertedValues);
   };
 
   return (
@@ -79,8 +108,6 @@ const Dashboard = (): JSX.Element => {
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={classes.paper}>
                 <CountrySearch
-                  searchString={searchString}
-                  setSearchString={setSearchString}
                   onSearch={onSearch}
                   loading={searchLoading}
                   countriesSearchData={
@@ -92,27 +119,20 @@ const Dashboard = (): JSX.Element => {
             </Grid>
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={classes.paper}>
-                <CurrencyConvert />
+                <CurrencyConvert onConvertCurrency={onConvertCurrency} />
               </Paper>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <CountryTable countriesInList={countriesInList} />
+                <CountryTable
+                  currencyConvValues={currencyConvValues}
+                  countriesInList={countriesInList}
+                />
               </Paper>
             </Grid>
           </Grid>
         </Container>
       </main>
-      <Snackbar
-        open={
-          error && (!!error?.networkError || error.graphQLErrors?.length > 0)
-        }
-      >
-        <div>
-          Oops! An error has occurred. Please try again. If error persists, try
-          logging in again.
-        </div>
-      </Snackbar>
     </div>
   );
 };
