@@ -5,6 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import { OnCurrencyConvertFunction } from "./currencyConvert.types";
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -18,26 +19,19 @@ const useStyles = makeStyles(() => ({
 
 const onCurrencyValueChange = (
   event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  setCurrencyValue: Function,
-  setConvertEnable: Function
+  setCurrencyValue: Function
 ): void => {
   const currencyValue = event.target.value;
   setCurrencyValue(currencyValue);
-  if (currencyValue !== "" && Number(currencyValue) > 0) {
-    setConvertEnable(true);
-  } else {
-    setConvertEnable(false);
-  }
 };
 
 const CurrencyConvert = ({
   onConvertCurrency,
 }: {
-  onConvertCurrency: Function;
+  onConvertCurrency: OnCurrencyConvertFunction;
 }) => {
   const classes = useStyles();
   const [currencyValue, setCurrencyValue] = useState(0);
-  const [convertEnabled, setConvertEnabled] = useState(false);
 
   return (
     <Container component="main">
@@ -62,9 +56,7 @@ const CurrencyConvert = ({
             id="currencyValue"
             label="Currency Value"
             name="currencyValue"
-            onChange={(event) =>
-              onCurrencyValueChange(event, setCurrencyValue, setConvertEnabled)
-            }
+            onChange={(event) => onCurrencyValueChange(event, setCurrencyValue)}
             value={currencyValue}
           />
 
@@ -73,7 +65,7 @@ const CurrencyConvert = ({
             fullWidth
             variant="contained"
             color="primary"
-            disabled={!convertEnabled}
+            disabled={Number(currencyValue) <= 0}
           >
             Convert
           </Button>

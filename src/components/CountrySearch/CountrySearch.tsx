@@ -9,6 +9,10 @@ import Card from "@material-ui/core/Card";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import { CountrySearchResult } from "../../pages/Dashboard/dashboard.types";
+import {
+  AddCountryToListFunction,
+  CountrySearchFunction,
+} from "./countrySearch.types";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -53,8 +57,8 @@ const CountrySearch = ({
   countriesSearchData,
   onAddCountryToList,
 }: {
-  onSearch: Function;
-  onAddCountryToList: Function;
+  onSearch: CountrySearchFunction;
+  onAddCountryToList: AddCountryToListFunction;
   loading: boolean;
   countriesSearchData: Array<CountrySearchResult>;
 }) => {

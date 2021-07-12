@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
 import { LOGIN_URL, SIMPLE_EMAIL_REGEX } from "./constants";
+import { StoreAuthTokenFunction } from "./login.types";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,7 +41,7 @@ const onEmailChange = (
 const onLoginSubmit = async (
   event: FormEvent,
   email: string,
-  storeAuthToken: Function,
+  storeAuthToken: StoreAuthTokenFunction,
   history: any
 ): Promise<void> => {
   // Prevent form submit default action
@@ -62,7 +63,7 @@ const Login = ({
   storeAuthToken,
   authToken,
 }: {
-  storeAuthToken: Function;
+  storeAuthToken: StoreAuthTokenFunction;
   authToken: string | null;
 }) => {
   const classes = useStyles();

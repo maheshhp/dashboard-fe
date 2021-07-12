@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = (): JSX.Element => {
   const classes = useStyles();
+
   const [currencyConvValues, setCurrencyConvValues] = useState<
     Record<string, Record<string, number>>
   >({});
