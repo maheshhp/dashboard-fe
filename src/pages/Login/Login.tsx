@@ -37,6 +37,8 @@ const onEmailChange = (
   // If email validates with the regex, enable login button
   if (SIMPLE_EMAIL_REGEX.test(String(email))) {
     setAllowLogin(true);
+  } else {
+    setAllowLogin(false);
   }
 };
 
@@ -100,7 +102,7 @@ const Login = ({
             required
             fullWidth
             id="email"
-            label="Email"
+            label="email"
             name="email"
             autoComplete="email"
             autoFocus
